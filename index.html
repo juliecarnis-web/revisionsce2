@@ -5,35 +5,507 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Je révise, je mémorise le CE2</title>
+    <!-- Bibliothèques externes -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Babel pour le JSX dans le navigateur -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/sitesv/APaQ0SQY1o9W1We-YogP7u1UeCykx6-1nllNiiGgLQqalJ9Br0GgsZPcOlycL-UNc4m1F3GsFi9TS7gP7q4TmksnzKVP1OevLb1nKgxEJf1qOBWoDPLZQ4B55GiDuWRJkS91HhnM1hOwgFu4Q7PHcfoQ_mnZiYJbG_sP2YxkBmOiX7LyJwNxvjKrldaMoARxKhaS2M23fUp6KOuhPb_8uwlf9PyRH6GOmjMRXmXTTv4=w1280">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/sitesv/APaQ0SQY1o9W1We-YogP7u1UeCykx6-1nllNiiGgLQqalJ9Br0GgsZPcOlycL-UNc4m1F3GsFi9TS7gP7q4TmksnzKVP1OevLb1nKgxEJf1qOBWoDPLZQ4B55GiDuWRJkS91HhnM1hOwgFu4Q7PHcfoQ_mnZiYJbG_sP2YxkBmOiX7LyJwNxvjKrldaMoARxKhaS2M23fUp6KOuhPb_8uwlf9PyRH6GOmjMRXmXTTv4=w1280">
+
     <style>
         body {
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Fredoka', sans-serif;
             background-color: #f0f9ff;
-            user-select: none;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .canva-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-active:active {
+            transform: scale(0.95);
         }
         .animate-pop {
             animation: pop 0.3s ease-out;
         }
         @keyframes pop {
-            0% { transform: scale(0.95); opacity: 0; }
+            0% { transform: scale(0.9); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
         }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useCallback } = React;
+
+        // --- CONSTANTES ---
+        const ICONS = {
+            HOME: "https://lh3.googleusercontent.com/sitesv/APaQ0SQY1o9W1We-YogP7u1UeCykx6-1nllNiiGgLQqalJ9Br0GgsZPcOlycL-UNc4m1F3GsFi9TS7gP7q4TmksnzKVP1OevLb1nKgxEJf1qOBWoDPLZQ4B55GiDuWRJkS91HhnM1hOwgFu4Q7PHcfoQ_mnZiYJbG_sP2YxkBmOiX7LyJwNxvjKrldaMoARxKhaS2M23fUp6KOuhPb_8uwlf9PyRH6GOmjMRXmXTTv4=w1280",
+            FRANCAIS: "https://lh3.googleusercontent.com/sitesv/APaQ0SSCye6XhWkMXB6GYPutlshJ68V4J0f7C5azFQM9GUGKlOk-nw2GmcRB2oAsGK2zUuH8JFLCAo2RVoevi1J90Q00GesZTG7doIj4alkJFKMMrLXIYMvs4qYxyYK5oODQ_j5izgKMVRbXQTKCEA57yzI7buoQYADz55VCyrhYNOtsNfK9PRXO3gZXx4L4XVIlXCH2xOWM-jYGEx1-9TkAS4UlSMBs8FNfeXByfkA=w1280",
+            MATHS: "https://lh3.googleusercontent.com/sitesv/APaQ0SSowBSQ9hRPUM1_jNn613ovFl_DTGVtlkF69aHUCLyNVkVKfcR1qYfRuvc7z1x4zjrLT2OMk0WG5pleQu72waeZU3wxqQ4vIsuYHOFv3PG6oYJeL5oCKGpNPnuPFsn7uX6LXxreRCjfifspYU2JJFaP0778sEtWAN8qnP7gUzHwP565oNg7Z29LKQ6KAb_w-ehHrGayy0J7dYxrQjQbN_rxg0iF9ly7cHHjXcw=w1280",
+            ORTHOGRAPHE: "https://lh3.googleusercontent.com/sitesv/APaQ0SRAkaYrVXP8rt0dcg1Ww_820q5SlC2_nXyU6modtqk6pDgZEs6mSbosnw5o6VMtPtZmAX8pSwe9dHgj06XXIFf2rP2A_KzyBztnvTOjNYTDhXf6mIp-czQtJEnO4QszDlfpJux9Yk9rX0DJQB8jEV5MkR-yJE74Lq0aprggssRYfzVQd5jKJMbEZTGvqeCot4jYSerbiWQQQGdDHK7P9jruYWjIq0z21rn_xBg=w1280",
+            VOCABULAIRE: "https://lh3.googleusercontent.com/sitesv/APaQ0STCQbLtxDa0KuEdl60aXVQDW6bxvDVh0YoCVTi-uWIgvl4_89PBINN2N_PAQqpMqG4q0ccMWfqniPcIt7xYHr5uvzqwuYmgyZIYLDK9e4lObtnEskYqPVsxbE7S1bXkvrZuB11z-3TfeOcjwodMmNlB8txp-PLBPFxfkGzN3G99gyctJ1OBB9E4iYapwY7SHuHqtPIK4WT5ppRZ-wb4VbWIx_CZTeE4GaJvNtM=w1280",
+            ETUDE_LANGUE: "https://lh3.googleusercontent.com/sitesv/APaQ0SRJZIZgT6h-ge3_Y-setJlxLMTfTpXFls5x-zHNCg5bVeeRJMEDIZxgrV4ASn8EY7lbGM8C8gLF_6C0sE0OoweDuHGKbHxa4KHrRz-3N4h1qwrFSuRbnACUycMPp0Lk33XA2CBNJHmAhvncosh19pyeu_X6IvEEN4ZzQDOnuzbks601z9fSIsTv9NZzTvlS5zx5pOUJKJKF4jAj_-I9mMGkOqmGSe1aPXcT7Fg=w1280",
+            COMPREHENSION: "https://lh3.googleusercontent.com/sitesv/APaQ0STE5wYdrvVyzb2n4qUExKjSiq0v03TsFKIQ5706Hl_T9QN3NjunB3Drz51HA_S5fLV-SN7f-lU4xfsgOLZWqRRwW5quXdcFSImfkisHLwhHUzTARwdEUCvY08JT2vRL_zXAMeN8C5DCMjGRiIKNR8OAhcV1EmuotnjOTjnEy8eqQCXxdb39DZ8DNpidR6bdSdAeToRSJ73XwDmrXs84UOjSCGGzj83kNlB1=w1280",
+            PRODUCTION_ECRIT: "https://lh3.googleusercontent.com/sitesv/APaQ0SSK612cmwnrO4hWm1qL4niwr-fSwtAU89V60BnGqlCYp56LyjBRtDxBGIAseZelieBHHkw5qdW1iltml8AFYusFzBx7yJA9gn7vqXc8neT7FC8sa2PKYnK9JMYi9ltauJUYruWORsAdPZ-Cs6YbPKSV11lRLI7WZyCHGShVeUVTKB0okOomi88UW8aBg3jsbvJVif0F3uuFFEKFHolH6CZkhqD9N39RSc3VzKE=w1280",
+            NUMERATION: "https://lh3.googleusercontent.com/sitesv/APaQ0SRP85rhqYqVCvSoTl3hvVIpE_YsL0P9m1xplM6wQ_uINKELV9AD9t70B9f0aHHioIQgKjza4blLc2dbpaTC2Tx0pqUZBNr15LZEfWrkyoiI_EnKWDkbWQYA-2BjJNvbws4GWzTQmS1aF9Ty3JcbnFqmziptwI0ZufqZ3XiQGWA_eXg2q-FNId65oliza9xq7DliNODkHzb_xHF2s0nkCh5czqDvEC-Cd-rC1wc=w1280",
+            CALCUL_MENTAL: "https://lh3.googleusercontent.com/sitesv/APaQ0SQ-KlAh9Pf9UEPkelOeUQldZIjWmcj1Z9jlXBMa67IdW4y5RYkfBb8fuiGCxdG5mS1KPrZtMV2MgPQ2Fk0RhwVPBPScMOxrvKJCby3OymIRJ5tioHhpkoyjAUGhr6RjEkH9o3PO4YULnXQdvP8xM2MdqpbMcWYSHVU-0FMaSbZUrZpQJcS1_47eIyc3yf45E0wMkVY_o1BpmEmkAv9jGs5y4KOCUAJ928g6=w1280",
+            CALCUL: "https://lh3.googleusercontent.com/sitesv/APaQ0SScoO0Xe3xCD5jWlLJH6IhLDxx58pW6UIeIqa96ZLjGJCMGvS1KgjaPILcbI7xH_ih-Ei-Xhk26gmn3kGufYscBylhk3B21Jx__f3hGIVUdhuhddr-YzUasc0W4FoZ_KYMBh4aFAzK7eygQ-n1Uj7xOrbH6OnPYSqStizd4woztIAJVbIGbR5iv0XPtTbYeR5QqfNMGYWaSGXh5gitUi71YvGMrwAuZC22JN4g=w1280",
+            GEOMETRIE: "https://lh3.googleusercontent.com/sitesv/APaQ0SRJcvmLSz5LKc72nRUk-8PmDkAMti2MdnNMhEn8-ETCAKUKoYFikh6diHU-Zvg44nhGsjQQzlasNZ-pIU6IwID0aEGZQScPIejsyZ67aRNoPAU8t7QAxSBHxtylnIpQ98WwTT_QZDZiMDsecRjHOj85FAUNbqiUqj4vHGcuZxSFEKGcATZTfg9y49tUAs_G00Tt_8aA3sSm5UrFvRDvfBZIa3TNwB5sFhe3Csc=w1280",
+            MESURES: "https://lh3.googleusercontent.com/sitesv/APaQ0SRudUVXtuImamYGdyl4CAPM15cHasbYfDi9jdtcj_pdM6YhPghBdUq3t9Uy2Er8-R_S_JawikKoD_MowAb0SaRSbNNu13_CCrWPqZfgQ5Su_iDC82hA4iIs0sJQSDaUMJvNVRkOdf8GxcypOkXLWjLgiMzqKrlEbY3vy-HLntBp8Q0SD3s7wJhewws0Cz0YzQVb7w2eX0xC0yV4pBZL3-W5TWInHKNfhBX2ASI=w1280",
+            PROBLEMES: "https://lh3.googleusercontent.com/sitesv/APaQ0STXdTQhy8_cEP3zD0I6c5R0a6CtdeYqhxeoMn3DN-t1Ftsj884-7eqlbNGUBOlZgsHke86PwmqxLvJdA8XDnQVC2Qsn_opHsCsnSBrCmSgSzKA1DlVHf74cuksG8oDk7LD1G-VUfsg1UEIDG7A4-i3PvJliSi1cCi-ux2Sr4bmWbwZTvU4jeYRebgdAtT3EqbeW3faOi1j1tIvX4AVYBLTdEx0_fHHRZwCGrw4=w1280"
+        };
+
+        const TEACHER_PASSWORD = "HPforever";
+
+        // --- SERVICES (LocalStorage) ---
+        const STORAGE_KEY = 'ce2_revise_memo_students_v1';
+        const storageService = {
+            getStudents: () => {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            },
+            saveStudents: (students) => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+            },
+            addStudent: (student) => {
+                const students = storageService.getStudents();
+                students.push(student);
+                storageService.saveStudents(students);
+            },
+            updateStudent: (student) => {
+                const students = storageService.getStudents();
+                const index = students.findIndex(s => s.id === student.id);
+                if (index !== -1) {
+                    students[index] = student;
+                    storageService.saveStudents(students);
+                }
+            },
+            deleteStudent: (studentId) => {
+                const students = storageService.getStudents();
+                storageService.saveStudents(students.filter(s => s.id !== studentId));
+            }
+        };
+
+        // --- DONNEES PEDAGOGIQUES ---
+        const createStandardChapter = (id, title) => ({
+            id, title,
+            series: [
+                { id: 1, title: "Lexique", questions: [
+                    { id: `${id}-l1`, type: 'qcm', question: `Qu'est-ce que le/la ${title} ?`, options: ["Une règle", "Un concept", "Un outil"], answer: "Un concept" }
+                ]},
+                { id: 2, title: "Concepts", questions: [] },
+                { id: 3, title: "Simple", questions: [] },
+                { id: 4, title: "Avancé", questions: [] }
+            ]
+        });
+
+        // Version simplifiée pour l'exemple mais structurée pour accueillir les 4 séries par chapitre
+        const PEDAGOGICAL_DATA = {
+            maths: [
+                { id: "m-num", title: "Numération", icon: ICONS.NUMERATION, chapters: [
+                    { id: "num-1", title: "Chiffres Romains", series: [
+                        { id: 1, title: "Lexique", questions: [
+                            { id: "r1", type: "qcm", question: "Que vaut 'V' ?", options: ["1", "5", "10"], answer: "5" },
+                            { id: "r2", type: "qcm", question: "Que vaut 'X' ?", options: ["5", "10", "100"], answer: "10" }
+                        ]},
+                        { id: 2, title: "Concepts", questions: [{ id: "r3", type: "text", question: "Écris 3 en chiffres romains", answer: "III" }]},
+                        { id: 3, title: "Simple", questions: [{ id: "r4", type: "text", question: "Écris 6 en chiffres romains", answer: "VI" }]},
+                        { id: 4, title: "Avancé", questions: [{ id: "r5", type: "text", question: "Écris 12 en chiffres romains", answer: "XII" }]}
+                    ]},
+                    createStandardChapter("num-2", "Nombres jusqu'à 1000")
+                ]},
+                { id: "m-calc", title: "Calcul", icon: ICONS.CALCUL, chapters: [createStandardChapter("calc-1", "Addition")] },
+                { id: "m-mes", title: "Mesures", icon: ICONS.MESURES, chapters: [createStandardChapter("mes-1", "Longueurs")] },
+                { id: "m-geo", title: "Géométrie", icon: ICONS.GEOMETRIE, chapters: [createStandardChapter("geo-1", "Les angles")] }
+            ],
+            francais: [
+                { id: "f-lang", title: "Étude de la langue", icon: ICONS.ETUDE_LANGUE, chapters: [createStandardChapter("lang-1", "Le sujet")] },
+                { id: "f-voc", title: "Vocabulaire", icon: ICONS.VOCABULAIRE, chapters: [createStandardChapter("voc-1", "Synonymes")] },
+                { id: "f-comp", title: "Compréhension", icon: ICONS.COMPREHENSION, chapters: [createStandardChapter("comp-1", "Inférences")] },
+                { id: "f-orth", title: "Orthographe", icon: ICONS.ORTHOGRAPHE, chapters: [createStandardChapter("orth-1", "Le pluriel")] },
+                { id: "f-prod", title: "Production d'écrit", icon: ICONS.PRODUCTION_ECRIT, chapters: [createStandardChapter("prod-1", "Le récit")] }
+            ]
+        };
+
+        // --- COMPOSANTS UI ---
+
+        const Header = ({ onHome, onBack, onLogout, userName, stars }) => (
+            <header className="bg-white border-b-4 border-blue-200 p-4 sticky top-0 z-50 flex items-center justify-between canva-shadow">
+                <div className="flex items-center gap-4">
+                    <button onClick={onHome} className="hover:scale-110 transition-transform btn-active">
+                        <img src={ICONS.HOME} alt="Accueil" className="w-12 h-12 object-contain" />
+                    </button>
+                    {onBack && (
+                        <button onClick={onBack} className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold flex items-center gap-2 btn-active">
+                            <span>←</span> Retour
+                        </button>
+                    )}
+                </div>
+                <div className="flex items-center gap-4">
+                    {userName && (
+                        <div className="hidden sm:flex flex-col items-end">
+                            <span className="font-bold text-blue-800 text-lg">{userName}</span>
+                            <span className="text-yellow-500 font-bold flex items-center gap-1">⭐ {stars}</span>
+                        </div>
+                    )}
+                    <button onClick={onLogout} className="bg-red-100 text-red-600 px-4 py-2 rounded-full font-bold hover:bg-red-200 transition-colors btn-active">
+                        Quitter
+                    </button>
+                </div>
+            </header>
+        );
+
+        const ExerciseView = ({ chapter, series, onFinish }) => {
+            const [qIndex, setQIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [feedback, setFeedback] = useState(null);
+            const [userInput, setUserInput] = useState('');
+
+            const currentQ = series.questions[qIndex];
+
+            const handleAnswer = (val) => {
+                const correct = val.trim().toLowerCase() === currentQ.answer.toLowerCase();
+                if (correct) setScore(s => s + 1);
+                setFeedback(correct ? 'bravo' : 'erreur');
+
+                setTimeout(() => {
+                    setFeedback(null);
+                    setUserInput('');
+                    if (qIndex < series.questions.length - 1) {
+                        setQIndex(qIndex + 1);
+                    } else {
+                        // On normalise le score sur 5 si besoin, ou on le renvoie tel quel
+                        onFinish(Math.round((score + (correct ? 1 : 0)) / series.questions.length * 5));
+                    }
+                }, 1000);
+            };
+
+            if (!currentQ) return (
+                <div className="bg-white p-10 rounded-3xl text-center shadow-xl">
+                    <p className="text-xl font-bold mb-6">Série en cours de préparation...</p>
+                    <button onClick={() => onFinish(0)} className="bg-blue-500 text-white px-8 py-3 rounded-full font-bold">Retour</button>
+                </div>
+            );
+
+            return (
+                <div className="max-w-2xl mx-auto p-4 animate-pop">
+                    <div className="bg-white p-8 rounded-[2rem] shadow-2xl border-t-8 border-blue-500">
+                        <div className="flex justify-between mb-8 text-gray-400 font-bold">
+                            <span>{chapter.title} - {series.title}</span>
+                            <span>{qIndex + 1} / {series.questions.length}</span>
+                        </div>
+                        <h3 className="text-2xl font-black mb-10 text-gray-800">{currentQ.question}</h3>
+                        
+                        <div className="space-y-4">
+                            {currentQ.type === 'qcm' ? (
+                                currentQ.options.map((opt, i) => (
+                                    <button 
+                                        key={i} 
+                                        onClick={() => handleAnswer(opt)}
+                                        className="w-full text-left p-6 rounded-2xl border-2 border-gray-100 font-bold text-lg hover:border-blue-500 hover:bg-blue-50 transition-all btn-active"
+                                    >
+                                        {opt}
+                                    </button>
+                                ))
+                            ) : (
+                                <div className="flex gap-4">
+                                    <input 
+                                        type="text" 
+                                        value={userInput} 
+                                        onChange={e => setUserInput(e.target.value)}
+                                        className="flex-1 p-4 border-2 border-gray-100 rounded-2xl font-bold text-lg focus:border-blue-500 outline-none"
+                                        placeholder="Ta réponse..."
+                                        autoFocus
+                                    />
+                                    <button onClick={() => handleAnswer(userInput)} className="bg-blue-500 text-white px-8 rounded-2xl font-bold">OK</button>
+                                </div>
+                            )}
+                        </div>
+
+                        {feedback && (
+                            <div className={`mt-8 text-center p-4 rounded-xl font-bold text-2xl animate-bounce ${feedback === 'bravo' ? 'text-green-500' : 'text-red-500'}`}>
+                                {feedback === 'bravo' ? '✨ GÉNIAL ! ✨' : 'Pas grave, essaye !'}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- APP PRINCIPALE ---
+
+        const App = () => {
+            const [view, setView] = useState('auth'); // auth, dashboard, subdomain, chapter, exercise, teacher
+            const [currentStudent, setCurrentStudent] = useState(null);
+            const [subject, setSubject] = useState(null);
+            const [subDomain, setSubDomain] = useState(null);
+            const [chapter, setChapter] = useState(null);
+            const [series, setSeries] = useState(null);
+
+            // Auth states
+            const [firstName, setFirstName] = useState('');
+            const [pin, setPin] = useState('');
+            const [teacherPin, setTeacherPin] = useState('');
+
+            const handleLogin = () => {
+                const students = storageService.getStudents();
+                const s = students.find(x => 
+                    x.firstName.trim().toLowerCase() === firstName.trim().toLowerCase() && 
+                    x.pin.trim() === pin.trim()
+                );
+                if (s) {
+                    setCurrentStudent(s);
+                    setView('dashboard');
+                    setSubject(null); setSubDomain(null); setChapter(null); setSeries(null);
+                } else {
+                    alert("Prénom ou code secret incorrect !");
+                }
+            };
+
+            const handleRegister = () => {
+                if (!firstName.trim() || !pin.trim()) return alert("Remplis ton prénom et un code secret !");
+                const newS = {
+                    id: Date.now().toString(),
+                    firstName: firstName.trim(),
+                    pin: pin.trim(),
+                    stars: 0,
+                    progress: []
+                };
+                storageService.addStudent(newS);
+                setCurrentStudent(newS);
+                setView('dashboard');
+            };
+
+            const handleHome = () => {
+                if (currentStudent) {
+                    // Re-sync local storage
+                    const students = storageService.getStudents();
+                    const updated = students.find(x => x.id === currentStudent.id);
+                    if (updated) setCurrentStudent(updated);
+                    
+                    setView('dashboard');
+                    setSubject(null); setSubDomain(null); setChapter(null); setSeries(null);
+                } else {
+                    setView('auth');
+                }
+            };
+
+            const handleFinishExercise = (score) => {
+                const students = storageService.getStudents();
+                const s = students.find(x => x.id === currentStudent.id);
+                
+                let prog = s.progress.find(p => p.chapterId === chapter.id);
+                if (!prog) {
+                    prog = { chapterId: chapter.id, seriesScores: [0,0,0,0] };
+                    s.progress.push(prog);
+                }
+                
+                const sIdx = series.id - 1;
+                const oldScore = prog.seriesScores[sIdx];
+                if (score > oldScore) {
+                    prog.seriesScores[sIdx] = score;
+                    s.stars += (score - oldScore);
+                }
+
+                storageService.updateStudent(s);
+                setCurrentStudent({...s});
+                setView('chapter');
+            };
+
+            const getChapterScore = (cid, sIdx) => {
+                const p = currentStudent.progress.find(x => x.chapterId === cid);
+                return p ? p.seriesScores[sIdx] : 0;
+            };
+
+            return (
+                <div className="min-h-screen">
+                    {view !== 'auth' && (
+                        <Header 
+                            userName={currentStudent?.firstName}
+                            stars={currentStudent?.stars || 0}
+                            onHome={handleHome}
+                            onLogout={() => { setView('auth'); setCurrentStudent(null); setFirstName(''); setPin(''); }}
+                            onBack={
+                                view === 'exercise' ? () => setView('chapter') : 
+                                view === 'chapter' ? () => setView('subdomain') : 
+                                view === 'subdomain' ? () => setView('dashboard') : null
+                            }
+                        />
+                    )}
+
+                    <main className="container mx-auto mt-6 px-4 pb-20">
+                        {view === 'auth' && (
+                            <div className="max-w-md mx-auto space-y-10 pt-10 animate-pop">
+                                <div className="text-center">
+                                    <img src={ICONS.HOME} alt="App Logo" className="w-48 h-48 mx-auto mb-4 drop-shadow-2xl" />
+                                    <h1 className="text-4xl font-black text-blue-600 tracking-tight leading-tight">Je révise, je mémorise le CE2</h1>
+                                </div>
+                                <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl border-t-8 border-blue-400">
+                                    <div className="space-y-4">
+                                        <input type="text" placeholder="Ton Prénom" value={firstName} onChange={e => setFirstName(e.target.value)} className="w-full p-5 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-400 font-bold text-lg" />
+                                        <input type="password" placeholder="Code Secret" value={pin} onChange={e => setPin(e.target.value)} className="w-full p-5 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-400 font-bold text-lg" />
+                                        <div className="grid grid-cols-2 gap-4 pt-4">
+                                            <button onClick={handleLogin} className="bg-blue-500 text-white py-5 rounded-2xl font-black text-lg hover:bg-blue-600 transition-all shadow-lg btn-active">Connexion</button>
+                                            <button onClick={handleRegister} className="bg-green-500 text-white py-5 rounded-2xl font-black text-lg hover:bg-green-600 transition-all shadow-lg btn-active">S'inscrire</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-center opacity-40 hover:opacity-100 transition-opacity">
+                                    <p className="text-sm font-bold mb-2">Espace Maître/Maîtresse</p>
+                                    <div className="flex gap-2">
+                                        <input type="password" placeholder="Pass" value={teacherPin} onChange={e => setTeacherPin(e.target.value)} className="p-2 border-2 rounded-xl w-32 font-bold" />
+                                        <button onClick={() => teacherPin === TEACHER_PASSWORD ? setView('teacher') : alert("Code faux")} className="bg-gray-800 text-white px-4 rounded-xl font-bold">OK</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'dashboard' && (
+                            <div className="animate-pop">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10">
+                                    <button onClick={() => { setSubject('maths'); setView('subdomain'); }} className="group relative h-80 rounded-[3rem] overflow-hidden shadow-2xl transition-transform btn-active">
+                                        <div className="absolute inset-0 bg-red-500 group-hover:bg-red-600 transition-colors" />
+                                        <div className="relative h-full flex flex-col items-center justify-center text-white">
+                                            <img src={ICONS.MATHS} className="w-44 h-44 object-contain mb-4 drop-shadow-xl" alt="Maths" />
+                                            <span className="text-5xl font-black">MATHS</span>
+                                        </div>
+                                    </button>
+                                    <button onClick={() => { setSubject('francais'); setView('subdomain'); }} className="group relative h-80 rounded-[3rem] overflow-hidden shadow-2xl transition-transform btn-active">
+                                        <div className="absolute inset-0 bg-blue-500 group-hover:bg-blue-600 transition-colors" />
+                                        <div className="relative h-full flex flex-col items-center justify-center text-white">
+                                            <img src={ICONS.FRANCAIS} className="w-44 h-44 object-contain mb-4 drop-shadow-xl" alt="Français" />
+                                            <span className="text-5xl font-black">FRANÇAIS</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'subdomain' && (
+                            <div className="animate-pop">
+                                <h2 className="text-3xl font-black text-gray-800 mb-10 flex items-center gap-4">
+                                    <img src={subject === 'maths' ? ICONS.MATHS : ICONS.FRANCAIS} className="w-16 h-16" />
+                                    Domaines en {subject === 'maths' ? 'Maths' : 'Français'}
+                                </h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {PEDAGOGICAL_DATA[subject].map(sd => (
+                                        <button key={sd.id} onClick={() => { setSubDomain(sd); setView('chapter'); }} className="bg-white p-8 rounded-[2rem] shadow-xl border-b-8 border-gray-100 hover:border-blue-400 flex flex-col items-center text-center gap-4 group btn-active">
+                                            <div className="p-6 bg-blue-50 rounded-3xl group-hover:scale-110 transition-transform">
+                                                <img src={sd.icon} className="w-24 h-24 object-contain" />
+                                            </div>
+                                            <span className="text-2xl font-black text-gray-700">{sd.title}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'chapter' && (
+                            <div className="animate-pop">
+                                <h2 className="text-3xl font-black mb-10 text-gray-800 flex items-center gap-4">
+                                    <img src={subDomain.icon} className="w-16 h-16" /> {subDomain.title}
+                                </h2>
+                                <div className="space-y-10">
+                                    {subDomain.chapters.map(ch => (
+                                        <div key={ch.id} className="bg-white p-10 rounded-[3rem] shadow-2xl border-l-[12px] border-blue-400">
+                                            <h3 className="text-3xl font-black text-gray-800 mb-8">{ch.title}</h3>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                                {ch.series.map((ser, i) => {
+                                                    const score = getChapterScore(ch.id, i);
+                                                    const isLocked = i > 0 && getChapterScore(ch.id, i-1) < 4;
+                                                    return (
+                                                        <button 
+                                                            key={ser.id} 
+                                                            disabled={isLocked}
+                                                            onClick={() => { setChapter(ch); setSeries(ser); setView('exercise'); }}
+                                                            className={`relative p-6 rounded-3xl border-4 transition-all flex flex-col items-center ${isLocked ? 'bg-gray-50 border-gray-200 opacity-50 grayscale' : 'bg-white border-blue-50 hover:border-blue-400 hover:shadow-xl btn-active'}`}
+                                                        >
+                                                            {isLocked && <span className="absolute top-2 right-2 text-2xl">🔒</span>}
+                                                            <span className="font-black text-blue-500 mb-4">{ser.title}</span>
+                                                            <div className="flex gap-1 mb-2">
+                                                                {[1,2,3,4,5].map(star => (
+                                                                    <span key={star} className={star <= score ? 'text-yellow-400 text-2xl' : 'text-gray-100 text-2xl'}>★</span>
+                                                                ))}
+                                                            </div>
+                                                            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{score}/5</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'exercise' && <ExerciseView chapter={chapter} series={series} onFinish={handleFinishExercise} />}
+
+                        {view === 'teacher' && (
+                            <div className="animate-pop">
+                                <div className="flex justify-between mb-10">
+                                    <h2 className="text-4xl font-black">Tableau des Élèves</h2>
+                                    <button onClick={() => setView('auth')} className="bg-gray-200 px-6 rounded-xl font-bold">Retour</button>
+                                </div>
+                                <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-blue-500 text-white">
+                                            <tr>
+                                                <th className="p-6">Prénom</th>
+                                                <th className="p-6">Code</th>
+                                                <th className="p-6">Étoiles</th>
+                                                <th className="p-6">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y">
+                                            {storageService.getStudents().map(s => (
+                                                <tr key={s.id} className="hover:bg-gray-50">
+                                                    <td className="p-6 font-bold text-xl">{s.firstName}</td>
+                                                    <td className="p-6 font-mono text-blue-500 font-bold">{s.pin}</td>
+                                                    <td className="p-6 text-yellow-500 font-black">⭐ {s.stars}</td>
+                                                    <td className="p-6">
+                                                        <button onClick={() => { if(confirm("Supprimer ?")) { storageService.deleteStudent(s.id); setView('teacher'); }}} className="text-red-500 font-bold">Supprimer</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
