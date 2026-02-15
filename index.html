@@ -66,20 +66,20 @@
 
         // --- CONSTANTES ---
         const ICONS = {
-            HOME: "https://lh3.googleusercontent.com/sitesv/APaQ0SQY1o9W1We-YogP7u1UeCykx6-1nllNiiGgLQqalJ9Br0GgsZPcOlycL-UNc4m1F3GsFi9TS7gP7q4TmksnzKVP1OevLb1nKgxEJf1qOBWoDPLZQ4B55GiDuWRJkS91HhnM1hOwgFu4Q7PHcfoQ_mnZiYJbG_sP2YxkBmOiX7LyJwNxvjKrldaMoARxKhaS2M23fUp6KOuhPb_8uwlf9PyRH6GOmjMRXmXTTv4=w1280",
-            FRANCAIS: "https://lh3.googleusercontent.com/sitesv/APaQ0SSCye6XhWkMXB6GYPutlshJ68V4J0f7C5azFQM9GUGKlOk-nw2GmcRB2oAsGK2zUuH8JFLCAo2RVoevi1J90Q00GesZTG7doIj4alkJFKMMrLXIYMvs4qYxyYK5oODQ_j5izgKMVRbXQTKCEA57yzI7buoQYADz55VCyrhYNOtsNfK9PRXO3gZXx4L4XVIlXCH2xOWM-jYGEx1-9TkAS4UlSMBs8FNfeXByfkA=w1280",
-            MATHS: "https://lh3.googleusercontent.com/sitesv/APaQ0SSowBSQ9hRPUM1_jNn613ovFl_DTGVtlkF69aHUCLyNVkVKfcR1qYfRuvc7z1x4zjrLT2OMk0WG5pleQu72waeZU3wxqQ4vIsuYHOFv3PG6oYJeL5oCKGpNPnuPFsn7uX6LXxreRCjfifspYU2JJFaP0778sEtWAN8qnP7gUzHwP565oNg7Z29LKQ6KAb_w-ehHrGayy0J7dYxrQjQbN_rxg0iF9ly7cHHjXcw=w1280",
-            ORTHOGRAPHE: "https://lh3.googleusercontent.com/sitesv/APaQ0SRAkaYrVXP8rt0dcg1Ww_820q5SlC2_nXyU6modtqk6pDgZEs6mSbosnw5o6VMtPtZmAX8pSwe9dHgj06XXIFf2rP2A_KzyBztnvTOjNYTDhXf6mIp-czQtJEnO4QszDlfpJux9Yk9rX0DJQB8jEV5MkR-yJE74Lq0aprggssRYfzVQd5jKJMbEZTGvqeCot4jYSerbiWQQQGdDHK7P9jruYWjIq0z21rn_xBg=w1280",
-            VOCABULAIRE: "https://lh3.googleusercontent.com/sitesv/APaQ0STCQbLtxDa0KuEdl60aXVQDW6bxvDVh0YoCVTi-uWIgvl4_89PBINN2N_PAQqpMqG4q0ccMWfqniPcIt7xYHr5uvzqwuYmgyZIYLDK9e4lObtnEskYqPVsxbE7S1bXkvrZuB11z-3TfeOcjwodMmNlB8txp-PLBPFxfkGzN3G99gyctJ1OBB9E4iYapwY7SHuHqtPIK4WT5ppRZ-wb4VbWIx_CZTeE4GaJvNtM=w1280",
-            ETUDE_LANGUE: "https://lh3.googleusercontent.com/sitesv/APaQ0SRJZIZgT6h-ge3_Y-setJlxLMTfTpXFls5x-zHNCg5bVeeRJMEDIZxgrV4ASn8EY7lbGM8C8gLF_6C0sE0OoweDuHGKbHxa4KHrRz-3N4h1qwrFSuRbnACUycMPp0Lk33XA2CBNJHmAhvncosh19pyeu_X6IvEEN4ZzQDOnuzbks601z9fSIsTv9NZzTvlS5zx5pOUJKJKF4jAj_-I9mMGkOqmGSe1aPXcT7Fg=w1280",
-            COMPREHENSION: "https://lh3.googleusercontent.com/sitesv/APaQ0STE5wYdrvVyzb2n4qUExKjSiq0v03TsFKIQ5706Hl_T9QN3NjunB3Drz51HA_S5fLV-SN7f-lU4xfsgOLZWqRRwW5quXdcFSImfkisHLwhHUzTARwdEUCvY08JT2vRL_zXAMeN8C5DCMjGRiIKNR8OAhcV1EmuotnjOTjnEy8eqQCXxdb39DZ8DNpidR6bdSdAeToRSJ73XwDmrXs84UOjSCGGzj83kNlB1=w1280",
-            PRODUCTION_ECRIT: "https://lh3.googleusercontent.com/sitesv/APaQ0SSK612cmwnrO4hWm1qL4niwr-fSwtAU89V60BnGqlCYp56LyjBRtDxBGIAseZelieBHHkw5qdW1iltml8AFYusFzBx7yJA9gn7vqXc8neT7FC8sa2PKYnK9JMYi9ltauJUYruWORsAdPZ-Cs6YbPKSV11lRLI7WZyCHGShVeUVTKB0okOomi88UW8aBg3jsbvJVif0F3uuFFEKFHolH6CZkhqD9N39RSc3VzKE=w1280",
-            NUMERATION: "https://lh3.googleusercontent.com/sitesv/APaQ0SRP85rhqYqVCvSoTl3hvVIpE_YsL0P9m1xplM6wQ_uINKELV9AD9t70B9f0aHHioIQgKjza4blLc2dbpaTC2Tx0pqUZBNr15LZEfWrkyoiI_EnKWDkbWQYA-2BjJNvbws4GWzTQmS1aF9Ty3JcbnFqmziptwI0ZufqZ3XiQGWA_eXg2q-FNId65oliza9xq7DliNODkHzb_xHF2s0nkCh5czqDvEC-Cd-rC1wc=w1280",
-            CALCUL_MENTAL: "https://lh3.googleusercontent.com/sitesv/APaQ0SQ-KlAh9Pf9UEPkelOeUQldZIjWmcj1Z9jlXBMa67IdW4y5RYkfBb8fuiGCxdG5mS1KPrZtMV2MgPQ2Fk0RhwVPBPScMOxrvKJCby3OymIRJ5tioHhpkoyjAUGhr6RjEkH9o3PO4YULnXQdvP8xM2MdqpbMcWYSHVU-0FMaSbZUrZpQJcS1_47eIyc3yf45E0wMkVY_o1BpmEmkAv9jGs5y4KOCUAJ928g6=w1280",
-            CALCUL: "https://lh3.googleusercontent.com/sitesv/APaQ0SScoO0Xe3xCD5jWlLJH6IhLDxx58pW6UIeIqa96ZLjGJCMGvS1KgjaPILcbI7xH_ih-Ei-Xhk26gmn3kGufYscBylhk3B21Jx__f3hGIVUdhuhddr-YzUasc0W4FoZ_KYMBh4aFAzK7eygQ-n1Uj7xOrbH6OnPYSqStizd4woztIAJVbIGbR5iv0XPtTbYeR5QqfNMGYWaSGXh5gitUi71YvGMrwAuZC22JN4g=w1280",
-            GEOMETRIE: "https://lh3.googleusercontent.com/sitesv/APaQ0SRJcvmLSz5LKc72nRUk-8PmDkAMti2MdnNMhEn8-ETCAKUKoYFikh6diHU-Zvg44nhGsjQQzlasNZ-pIU6IwID0aEGZQScPIejsyZ67aRNoPAU8t7QAxSBHxtylnIpQ98WwTT_QZDZiMDsecRjHOj85FAUNbqiUqj4vHGcuZxSFEKGcATZTfg9y49tUAs_G00Tt_8aA3sSm5UrFvRDvfBZIa3TNwB5sFhe3Csc=w1280",
-            MESURES: "https://lh3.googleusercontent.com/sitesv/APaQ0SRudUVXtuImamYGdyl4CAPM15cHasbYfDi9jdtcj_pdM6YhPghBdUq3t9Uy2Er8-R_S_JawikKoD_MowAb0SaRSbNNu13_CCrWPqZfgQ5Su_iDC82hA4iIs0sJQSDaUMJvNVRkOdf8GxcypOkXLWjLgiMzqKrlEbY3vy-HLntBp8Q0SD3s7wJhewws0Cz0YzQVb7w2eX0xC0yV4pBZL3-W5TWInHKNfhBX2ASI=w1280",
-            PROBLEMES: "https://lh3.googleusercontent.com/sitesv/APaQ0STXdTQhy8_cEP3zD0I6c5R0a6CtdeYqhxeoMn3DN-t1Ftsj884-7eqlbNGUBOlZgsHke86PwmqxLvJdA8XDnQVC2Qsn_opHsCsnSBrCmSgSzKA1DlVHf74cuksG8oDk7LD1G-VUfsg1UEIDG7A4-i3PvJliSi1cCi-ux2Sr4bmWbwZTvU4jeYRebgdAtT3EqbeW3faOi1j1tIvX4AVYBLTdEx0_fHHRZwCGrw4=w1280"
+            HOME: "PICTO/acc.png",
+            FRANCAIS: "PICTO/fra.png",
+            MATHS: "PICTO/maths.png",
+            ORTHOGRAPHE: "ICTO/orthographe.png",
+            VOCABULAIRE: "PICTO/voc.png",
+            ETUDE_LANGUE: "PICTO/edl.png",
+            COMPREHENSION: "PICTO/comp.png",
+            PRODUCTION_ECRIT: "PICTO/prodecr.png",
+            NUMERATION: "PICTO/num.png",
+            CALCUL_MENTAL: "PICTO/calcment.png",
+            CALCUL: "PICTO/calc.png",
+            GEOMETRIE: "PICTO/geom.png",
+            MESURES: "PICTO/gem.png",
+            PROBLEMES: "PICTO/resopb.png"
         };
 
         const TEACHER_PASSWORD = "HPforever";
